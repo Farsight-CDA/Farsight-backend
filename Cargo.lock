@@ -1107,9 +1107,11 @@ dependencies = [
  "actix-web",
  "ethers",
  "log",
+ "once_cell",
  "pretty_env_logger",
  "serde",
  "serde_json",
+ "toml",
 ]
 
 [[package]]

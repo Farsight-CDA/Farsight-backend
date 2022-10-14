@@ -13,6 +13,8 @@ log = "0.4.17"
 pretty_env_logger = "*"
 serde_json = "*"
 serde = { version = "*", features = ["derive"]}
+toml = "*"
+once_cell = "*"
 
 [[bin]]
 name = "farsight-backend"
