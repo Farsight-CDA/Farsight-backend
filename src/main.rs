@@ -1,7 +1,7 @@
-pub mod webserver;
+pub mod config;
 pub mod handlers;
 pub mod types;
-pub mod config;
+pub mod webserver;
 
 use actix_web;
 use config::Config;
@@ -14,16 +14,18 @@ pub const CONFIG_FILE: &str = "config.toml";
 
 pub static CONFIG: OnceCell<Config> = OnceCell::new();
 
-pub fn get_config() -> &'static Config{
+pub fn get_config() -> &'static Config {
     CONFIG.get().unwrap()
 }
 
 #[actix_web::main]
-pub async fn main() -> std::io::Result<()>{
+pub async fn main() -> std::io::Result<()> {
     std::env::set_var("LOGLEVEL", "debug");
     pretty_env_logger::init_custom_env("LOGLEVEL");
 
-    CONFIG.set(Config::load(CONFIG_PATH, CONFIG_FILE).expect("Failed to load config")).unwrap();
+    CONFIG
+        .set(Config::load(CONFIG_PATH, CONFIG_FILE).expect("Failed to load config"))
+        .unwrap();
 
     webserver::run().await
 }

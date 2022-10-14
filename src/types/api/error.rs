@@ -11,12 +11,6 @@ impl std::fmt::Display for Error {
     }
 }
 
-/// Informatin to print on the error page
-pub struct InfoText {
-    pub primary: &'static str,
-    pub secondary: &'static str,
-}
-
 impl ResponseError for Error {
     fn status_code(&self) -> StatusCode {
         match self {

@@ -1,7 +1,8 @@
-use actix_web::{web::Json, get, Responder};
-use crate::types::api::{self, registration, error};
+use crate::types::api::{error, registration};
+use actix_web::web::Json;
 
-#[get("/api/getPrice")]
-async fn handle(req: Json<registration::Request>) -> Result<Json<registration::Response>, error::Error> {
+pub async fn handle(
+    req: Json<registration::Request>,
+) -> Result<Json<registration::Response>, error::Error> {
     todo!()
 }

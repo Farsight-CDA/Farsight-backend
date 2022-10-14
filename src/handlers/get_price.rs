@@ -1,7 +1,6 @@
-use actix_web::{web::Json, get};
-use crate::types::api::{price, error};
+use crate::types::api::{error, price};
+use actix_web::web::Json;
 
-#[get("/api/getPrice")]
-async fn handle(req: Json<price::Request>) -> Result<Json<price::Response>, error::Error> {
-    todo!()
+pub async fn handle(req: Json<price::Request>) -> Result<Json<price::Response>, error::Error> {
+    Err(error::Error::Internal)
 }

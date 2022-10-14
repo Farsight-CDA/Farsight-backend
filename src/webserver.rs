@@ -1,16 +1,20 @@
-use actix_web::{get,App, HttpServer, HttpRequest, Responder};
+use actix_web::{get, web, App, HttpRequest, HttpServer, Responder};
 
-use crate::{get_config, handlers::{get_price, get_registration}};
+use crate::{
+    get_config,
+    handlers::{get_price, get_registration},
+};
 
-pub async fn run() -> std::io::Result<()>{
+pub async fn run() -> std::io::Result<()> {
     let address = get_config().webserver.bind_address.as_str();
     let port = get_config().webserver.port;
 
     HttpServer::new(|| {
-        App::new()
-            .service(index)
-            .service(get_price::handle)
-            .service(get_registration::handle)
+        App::new().service(index).service(
+            web::scope("/api")
+                .route("getPrice", web::get().to(get_price::handle))
+                .route("getRegistration", web::get().to(get_registration::handle)),
+        )
     })
     .bind((address, port))?
     .run()
@@ -19,5 +23,5 @@ pub async fn run() -> std::io::Result<()>{
 
 #[get("/")]
 async fn index(_req: HttpRequest) -> impl Responder {
-    "Hello from the index page!"
+    "Index page"
 }
