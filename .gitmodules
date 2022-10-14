@@ -1,0 +1,3 @@
+[submodule "Farsight-Contracts"]
+	path = Farsight-Contracts
+	url = https://github.com/Farsight-Tracking/Farsight-Contracts.git
