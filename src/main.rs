@@ -1,4 +1,6 @@
 pub mod webserver;
+pub mod handlers;
+pub mod types;
 pub mod config;
 
 use actix_web;
@@ -11,6 +13,10 @@ pub const CONFIG_PATH: &str = "./config";
 pub const CONFIG_FILE: &str = "config.toml";
 
 pub static CONFIG: OnceCell<Config> = OnceCell::new();
+
+pub fn get_config() -> &'static Config{
+    CONFIG.get().unwrap()
+}
 
 #[actix_web::main]
 pub async fn main() -> std::io::Result<()>{

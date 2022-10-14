@@ -9,13 +9,13 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
-    webserver: Webserver,
+    pub webserver: Webserver,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Webserver {
-    bind_address: String,
-    port: u16,
+    pub bind_address: String,
+    pub port: u16,
 }
 
 impl Default for Webserver {
