@@ -10,12 +10,21 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
     pub webserver: Webserver,
+    pub image: Image,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Webserver {
     pub bind_address: String,
     pub port: u16,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Image {
+    pub python_bin: String,
+    pub image_cache: String,
+    pub bg_image: String,
+    pub font: String,
 }
 
 impl Default for Webserver {
@@ -27,10 +36,22 @@ impl Default for Webserver {
     }
 }
 
+impl Default for Image {
+    fn default() -> Self {
+        Self {
+            python_bin: "/usr/bin/python".to_string(),
+            image_cache: "./img_cache".to_string(),
+            bg_image: "./background.png".to_string(),
+            font: "./SourceCodePro-Bold.ttf".to_string(),
+        }
+    }
+}
+
 impl Default for Config {
     fn default() -> Self {
         Self {
             webserver: Default::default(),
+            image: Image::default(),
         }
     }
 }

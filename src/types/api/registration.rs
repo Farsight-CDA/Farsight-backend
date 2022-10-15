@@ -3,21 +3,21 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct Request {
-    name: String,
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct Response {
-    available: bool,
-    chain_states: Vec<ChainState>,
+    pub available: bool,
+    pub chain_states: Vec<ChainState>,
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct ChainState {
     #[serde(rename = "chainId")]
-    chain_id: U256,
-    owner: String,
-    expiration: U256,
+    pub chain_id: U256,
+    pub owner: String,
+    pub expiration: U256,
     #[serde(rename = "isKeeper")]
-    is_keeper: bool,
+    pub is_keeper: bool,
 }

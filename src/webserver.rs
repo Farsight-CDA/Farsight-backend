@@ -2,7 +2,7 @@ use actix_web::{get, web, App, HttpRequest, HttpServer, Responder};
 
 use crate::{
     get_config,
-    handlers::{get_price, get_registration},
+    handlers::{get_price, get_registration, img_gen},
 };
 
 pub async fn run() -> std::io::Result<()> {
@@ -13,7 +13,8 @@ pub async fn run() -> std::io::Result<()> {
         App::new().service(index).service(
             web::scope("/api")
                 .route("getPrice", web::get().to(get_price::handle))
-                .route("getRegistration", web::get().to(get_registration::handle)),
+                .route("getRegistration", web::get().to(get_registration::handle))
+                .route("genImg", web::get().to(img_gen::handle)),
         )
     })
     .bind((address, port))?

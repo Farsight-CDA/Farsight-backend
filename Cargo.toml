@@ -8,6 +8,7 @@ default-run = "farsight-backend"
 
 [dependencies]
 actix-web = "4.2.1"
+actix-files = "0.6.2"
 ethers ={version =  "0.17.0", features=["abigen"]}
 log = "0.4.17"
 pretty_env_logger = "*"
@@ -15,6 +16,7 @@ serde_json = "*"
 serde = { version = "*", features = ["derive"]}
 toml = "*"
 once_cell = "*"
+base64 = "*"
 
 [[bin]]
 name = "farsight-backend"

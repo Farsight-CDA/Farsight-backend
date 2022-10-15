@@ -29,3 +29,10 @@ impl From<BlockingError> for Error {
         Self::Internal
     }
 }
+
+impl From<std::io::Error> for Error {
+    #[inline]
+    fn from(_: std::io::Error) -> Self {
+        Self::Internal
+    }
+}
