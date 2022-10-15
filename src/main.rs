@@ -4,11 +4,14 @@ pub mod provider_manager;
 pub mod types;
 pub mod webserver;
 
-use std::{str::FromStr, sync::Arc};
+use std::str::FromStr;
 
 use actix_web;
 use config::Config;
-use ethers::providers::{Http, Provider};
+use ethers::{
+    abi::Address,
+    providers::{Http, Provider},
+};
 use log::{debug, error};
 use once_cell::sync::OnceCell;
 use provider_manager::{ProviderAddress, ProviderEntry, ProviderManager};
@@ -25,6 +28,10 @@ pub fn get_config() -> &'static Config {
     CONFIG.get().unwrap()
 }
 
+pub fn get_provider_manager() -> &'static ProviderManager {
+    PROVIDER.get().unwrap()
+}
+
 use ethers::prelude::*;
 
 const LOGLEVEL: &str = "LOGLEVEL";
@@ -38,7 +45,7 @@ pub async fn main() -> std::io::Result<()> {
 
     let config = Config::load(CONFIG_PATH, CONFIG_FILE).expect("Failed to load config");
 
-    let manager = get_provider_manager(&config);
+    let manager = load_provider_manager(&config);
     if !manager.has_provider() {
         error!("No provider definied");
         std::process::exit(1);
@@ -50,7 +57,7 @@ pub async fn main() -> std::io::Result<()> {
     webserver::run().await
 }
 
-fn get_provider_manager(config: &Config) -> ProviderManager {
+fn load_provider_manager(config: &Config) -> ProviderManager {
     let mut manager = ProviderManager::new();
 
     for p in &config.provider {

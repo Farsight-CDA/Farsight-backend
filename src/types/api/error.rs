@@ -1,4 +1,6 @@
 use actix_web::{error::BlockingError, http::StatusCode, HttpResponse, ResponseError};
+use ethers::{prelude::ContractError, providers::Middleware};
+use log::debug;
 
 #[derive(Debug)]
 pub enum Error {
@@ -32,7 +34,16 @@ impl From<BlockingError> for Error {
 
 impl From<std::io::Error> for Error {
     #[inline]
-    fn from(_: std::io::Error) -> Self {
+    fn from(e: std::io::Error) -> Self {
+        debug!("std::io::Error: {e:?}");
+        Self::Internal
+    }
+}
+
+impl<M: Middleware> From<ContractError<M>> for Error {
+    #[inline]
+    fn from(e: ContractError<M>) -> Self {
+        debug!("Contract error: {e:?}");
         Self::Internal
     }
 }
