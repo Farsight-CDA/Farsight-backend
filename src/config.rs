@@ -7,10 +7,26 @@ use std::{
 
 use serde::{Deserialize, Serialize};
 
+use crate::types::contract::ContractType;
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
+    pub provider: Vec<Provider>,
     pub webserver: Webserver,
     pub image: Image,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Provider {
+    pub url: String,
+    pub is_main: bool,
+    pub addresses: Vec<ProviderAddress>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ProviderAddress {
+    pub address: String,
+    pub c_type: ContractType,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -52,6 +68,14 @@ impl Default for Config {
         Self {
             webserver: Default::default(),
             image: Image::default(),
+            provider: vec![Provider {
+                url: "http://url".to_string(),
+                addresses: vec![ProviderAddress {
+                    address: "1234".to_string(),
+                    c_type: ContractType::Registrar,
+                }],
+                is_main: true,
+            }],
         }
     }
 }

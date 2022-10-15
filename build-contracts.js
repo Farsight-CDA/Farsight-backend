@@ -3,7 +3,7 @@ const solc = require('solc')
 const path = require('path')
 const { concat } = require("./node_modules/ethers/lib/utils");
 
-const contract_names = ["IMainRegistrar", "IRegistrar"];
+const contract_names = ["IMainRegistrar", "IRegistrar", "IERC721", "IERC20PaymentProvider"];
 const contracts_root = path.join("Farsight-Contracts", "src");
 const output_root = "contracts";
 const abi_out = "abi";

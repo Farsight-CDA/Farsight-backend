@@ -11,8 +11,8 @@ use std::{
 };
 
 pub async fn handle(req: Json<img_gen::Request>) -> Result<impl Responder, error::Error> {
+    // return error on invalid char a-Z0-9
     let name = request_hash(&req.hash).await?;
-
     if name.is_empty() {
         return Err(error::Error::Internal);
     }
