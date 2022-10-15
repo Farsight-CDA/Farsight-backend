@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct Request {
-    pub name: String,
+    pub name: U256,
 }
 
 #[derive(Serialize, Deserialize)]
