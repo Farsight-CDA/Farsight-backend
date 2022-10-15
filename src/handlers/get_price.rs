@@ -27,7 +27,6 @@ pub async fn handle(req: Json<price::Request>) -> Result<Json<price::Response>, 
         .await?;
 
     let token = payment_provider.get_token_address().call().await?;
-    let token = token.to_string();
 
     let response = price::Response { token, amount };
     Ok(Json(response))

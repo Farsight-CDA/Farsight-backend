@@ -32,8 +32,6 @@ pub fn get_provider_manager() -> &'static ProviderManager {
     PROVIDER.get().unwrap()
 }
 
-use ethers::prelude::*;
-
 const LOGLEVEL: &str = "LOGLEVEL";
 
 #[actix_web::main]

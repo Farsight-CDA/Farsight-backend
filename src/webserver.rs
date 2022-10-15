@@ -12,9 +12,9 @@ pub async fn run() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new().service(index).service(
             web::scope("/api")
-                .route("getPrice", web::get().to(get_price::handle))
-                .route("getRegistration", web::get().to(get_registration::handle))
-                .route("genImg", web::get().to(img_gen::handle)),
+                .route("getPrice", web::post().to(get_price::handle))
+                .route("getRegistration", web::post().to(get_registration::handle))
+                .route("genImg", web::post().to(img_gen::handle)),
         )
     })
     .bind((address, port))?

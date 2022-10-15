@@ -1,4 +1,4 @@
-use ethers::types::U256;
+use ethers::{abi::Address, types::U256};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
@@ -8,8 +8,8 @@ pub struct Request {
     pub duration: U256,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize)]
 pub struct Response {
-    pub token: String,
+    pub token: Address,
     pub amount: U256,
 }

@@ -1,11 +1,9 @@
-use std::sync::Arc;
-
+use crate::types::contract::ContractType;
 use ethers::{
     providers::{Http, Provider},
     types::Address,
 };
-
-use crate::types::contract::ContractType;
+use std::sync::Arc;
 
 pub struct ProviderManager {
     provider: Vec<ProviderEntry>,
