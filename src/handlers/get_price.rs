@@ -19,7 +19,7 @@ pub async fn handle(req: Json<price::Request>) -> Result<Json<price::Response>, 
     create = "{ TimedSizedCache::with_size_and_lifespan(DEFAULT_CACHE_SIZE,DEFAULT_CACHE_TIMEOUT) }"
 )]
 async fn fetch_data(req: &price::Request) -> Result<price::Response, error::Error> {
-    let main_provider = get_provider_manager().get_main();
+    let main_provider = get_provider_manager().main();
     let payment_address = main_provider
         .contract_address(ContractType::PaymentProvider)
         .unwrap();

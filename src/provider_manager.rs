@@ -15,6 +15,7 @@ pub struct ProviderEntry {
     id: u64,
     addresses: Vec<ProviderAddress>,
     is_main: bool,
+    bridge: Address,
 }
 
 #[derive(Debug)]
@@ -46,6 +47,7 @@ impl ProviderEntry {
         url: String,
         id: u64,
         is_main: bool,
+        bridge: Address,
         addresses: Vec<ProviderAddress>,
     ) -> Self {
         Self {
@@ -54,6 +56,7 @@ impl ProviderEntry {
             id,
             is_main,
             addresses,
+            bridge,
         }
     }
 
@@ -80,6 +83,10 @@ impl ProviderEntry {
     pub fn contract_address(&self, ct: ContractType) -> Option<&ProviderAddress> {
         self.addresses.iter().find(|i| i.contract_type == ct)
     }
+
+    pub fn bridge_address(&self) -> &Address {
+        &self.bridge
+    }
 }
 
 impl ProviderManager {
@@ -103,7 +110,11 @@ impl ProviderManager {
         self.provider.iter()
     }
 
-    pub fn get_main(&self) -> &ProviderEntry {
+    pub fn by_id(&self, id: u64) -> Option<&ProviderEntry> {
+        self.provider.iter().find(|i| i.id == id)
+    }
+
+    pub fn main(&self) -> &ProviderEntry {
         self.provider
             .iter()
             .find(|i| i.is_main)

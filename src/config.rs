@@ -19,6 +19,7 @@ pub struct Config {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Provider {
     pub url: String,
+    pub name: String,
     pub is_main: bool,
     pub id: u64,
     pub addresses: Vec<ProviderAddress>,
@@ -71,6 +72,7 @@ impl Default for Config {
             image: Image::default(),
             provider: vec![Provider {
                 id: 0,
+                name: "p".to_string(),
                 url: "http://url".to_string(),
                 addresses: vec![ProviderAddress {
                     address: "1234".to_string(),

@@ -38,7 +38,7 @@ pub async fn handle(
     create = "{ TimedSizedCache::with_size_and_lifespan(DEFAULT_CACHE_SIZE,DEFAULT_CACHE_TIMEOUT) }"
 )]
 async fn is_available(name: U256) -> Result<bool, error::Error> {
-    let main_provider = get_provider_manager().get_main();
+    let main_provider = get_provider_manager().main();
 
     let registrar = main_provider
         .contract_address(ContractType::Registrar)

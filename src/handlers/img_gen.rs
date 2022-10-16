@@ -19,9 +19,13 @@ use std::{
 };
 
 pub async fn handle(req: Json<img_gen::Request>) -> Result<impl Responder, error::Error> {
-    // TODO: return error on invalid char a-Z0-9
     let name = request_hash(req.hash).await?;
     if name.is_empty() {
+        return Err(error::Error::Internal);
+    }
+
+    if !check_name(&name) {
+        // Other errorcode?
         return Err(error::Error::Internal);
     }
 
@@ -35,12 +39,17 @@ pub async fn handle(req: Json<img_gen::Request>) -> Result<impl Responder, error
     Ok(NamedFile::open(img_fpath(&local_filename))?)
 }
 
+fn check_name(inp: &str) -> bool {
+    // Special chars are allowed ?/!',.p!@#$'
+    inp.is_ascii()
+}
+
 #[cached(
     type = "TimedSizedCache<U256, Result<String, error::Error>>",
     create = "{ TimedSizedCache::with_size_and_lifespan(DEFAULT_CACHE_SIZE,DEFAULT_CACHE_TIMEOUT) }"
 )]
 async fn request_hash(inp: U256) -> Result<String, error::Error> {
-    let main_provider = get_provider_manager().get_main();
+    let main_provider = get_provider_manager().main();
 
     let reg_address = main_provider
         .contract_address(ContractType::Registrar)

@@ -4,7 +4,7 @@ pub mod provider_manager;
 pub mod types;
 pub mod webserver;
 
-use std::str::FromStr;
+use std::{str::FromStr, sync::Arc};
 
 use actix_web;
 use config::Config;
@@ -18,6 +18,8 @@ use provider_manager::{ProviderAddress, ProviderEntry, ProviderManager};
 use types::contract::ContractType;
 
 include!("../types_output/abi_types.rs");
+
+const LOGLEVEL: &str = "LOGLEVEL";
 
 pub const CONFIG_PATH: &str = "./config";
 pub const CONFIG_FILE: &str = "config.toml";
@@ -36,8 +38,6 @@ pub fn get_provider_manager() -> &'static ProviderManager {
     PROVIDER.get().unwrap()
 }
 
-const LOGLEVEL: &str = "LOGLEVEL";
-
 #[actix_web::main]
 pub async fn main() -> std::io::Result<()> {
     if std::env::var(LOGLEVEL).is_err() {
@@ -47,7 +47,7 @@ pub async fn main() -> std::io::Result<()> {
 
     let config = Config::load(CONFIG_PATH, CONFIG_FILE).expect("Failed to load config");
 
-    let manager = load_provider_manager(&config);
+    let manager = load_provider_manager(&config).await;
     if let Err(err) = check_provider_manager(&manager) {
         error!("Provider config invalid: {err}");
         std::process::exit(1);
@@ -59,7 +59,7 @@ pub async fn main() -> std::io::Result<()> {
     webserver::run().await
 }
 
-fn load_provider_manager(config: &Config) -> ProviderManager {
+async fn load_provider_manager(config: &Config) -> ProviderManager {
     let mut manager = ProviderManager::new();
 
     for p in &config.provider {
@@ -74,6 +74,20 @@ fn load_provider_manager(config: &Config) -> ProviderManager {
 
         let provider = Provider::<Http>::try_from(&p.url).expect("Invalid provider url");
 
+        let registrar_address = addresses
+            .iter()
+            .find(|i| i.contract_type() == ContractType::Registrar)
+            .expect(&format!("Registrar address not set up for {}", p.url));
+        let registrar = IMainRegistrar::new(
+            registrar_address.address().clone(),
+            Arc::new(provider.clone()),
+        );
+        let bridge_address = registrar
+            .get_name_bridge()
+            .call()
+            .await
+            .expect(&format!("Failed to get bridge for {}", p.url));
+
         debug!("Loading {} with {} addresse(s)", p.url, addresses.len());
 
         manager.add_provider(ProviderEntry::new(
@@ -81,6 +95,7 @@ fn load_provider_manager(config: &Config) -> ProviderManager {
             p.url.clone(),
             p.id,
             p.is_main,
+            bridge_address,
             addresses,
         ));
     }
@@ -98,7 +113,7 @@ fn check_provider_manager(pm: &ProviderManager) -> Result<(), String> {
     }
 
     // Assert main provider having all contract types setup correctly
-    let main = pm.get_main();
+    let main = pm.main();
     for ctype in ContractType::iter() {
         if main.contract_address(ctype).is_none() {
             return Err(format!(
@@ -119,6 +134,3 @@ fn check_provider_manager(pm: &ProviderManager) -> Result<(), String> {
 
     Ok(())
 }
-
-// the other new api call:
-// main registrar lookup plain name
