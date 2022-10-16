@@ -30,9 +30,14 @@ async fn estimate(req: &Request<RegisterRequestParam>) -> Result<U256, error::Er
         main_provider.provider(),
     );
 
+    let chain_name = get_provider_manager()
+        .by_id(req.chain_id as u64)
+        .ok_or(error::Error::NotFound)?
+        .name();
+
     let est = main_reg_cnt
         .receive_register_request(
-            req.chain_id.clone(),
+            chain_name.to_string(),
             req.parameter.plain_name.clone(),
             req.parameter.name,
             req.parameter.owner.clone(),

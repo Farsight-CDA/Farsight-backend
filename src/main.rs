@@ -93,6 +93,7 @@ async fn load_provider_manager(config: &Config) -> ProviderManager {
         manager.add_provider(ProviderEntry::new(
             provider,
             p.url.clone(),
+            p.name.clone(),
             p.id,
             p.is_main,
             bridge_address,

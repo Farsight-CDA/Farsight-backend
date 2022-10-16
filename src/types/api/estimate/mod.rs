@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Deserialize)]
 pub struct Request<T> {
     #[serde(default)]
-    pub chain_id: String,
+    pub chain_id: usize,
 
     #[serde(flatten)]
     pub parameter: T,

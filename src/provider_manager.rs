@@ -11,6 +11,7 @@ pub struct ProviderManager {
 
 pub struct ProviderEntry {
     provider: Arc<Provider<Http>>,
+    name: String,
     provider_url: String,
     id: u64,
     addresses: Vec<ProviderAddress>,
@@ -45,6 +46,7 @@ impl ProviderEntry {
     pub fn new(
         provider: Provider<Http>,
         url: String,
+        name: String,
         id: u64,
         is_main: bool,
         bridge: Address,
@@ -53,6 +55,7 @@ impl ProviderEntry {
         Self {
             provider: Arc::new(provider),
             provider_url: url,
+            name,
             id,
             is_main,
             addresses,
@@ -86,6 +89,10 @@ impl ProviderEntry {
 
     pub fn bridge_address(&self) -> &Address {
         &self.bridge
+    }
+
+    pub fn name(&self) -> &str {
+        &self.name
     }
 }
 

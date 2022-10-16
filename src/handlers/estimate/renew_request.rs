@@ -30,9 +30,14 @@ async fn estimate(req: &Request<RenewRequestParam>) -> Result<U256, error::Error
         main_provider.provider(),
     );
 
+    let chain_name = get_provider_manager()
+        .by_id(req.chain_id as u64)
+        .ok_or(error::Error::NotFound)?
+        .name();
+
     let est = main_reg_cnt
         .receive_renew_request(
-            req.chain_id.clone(),
+            chain_name.to_string(),
             req.parameter.name,
             req.parameter.reg_version,
             req.parameter.duration,
