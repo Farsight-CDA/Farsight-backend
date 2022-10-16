@@ -3,7 +3,7 @@ use ethers::{
     providers::{Http, Provider},
     types::Address,
 };
-use std::sync::Arc;
+use std::{slice::Iter, sync::Arc};
 
 pub struct ProviderManager {
     provider: Vec<ProviderEntry>,
@@ -11,6 +11,7 @@ pub struct ProviderManager {
 
 pub struct ProviderEntry {
     provider: Arc<Provider<Http>>,
+    provider_url: String,
     addresses: Vec<ProviderAddress>,
     is_main: bool,
 }
@@ -39,12 +40,22 @@ impl ProviderAddress {
 }
 
 impl ProviderEntry {
-    pub fn new(provider: Provider<Http>, is_main: bool, addresses: Vec<ProviderAddress>) -> Self {
+    pub fn new(
+        provider: Provider<Http>,
+        url: String,
+        is_main: bool,
+        addresses: Vec<ProviderAddress>,
+    ) -> Self {
         Self {
             provider: Arc::new(provider),
+            provider_url: url,
             is_main,
             addresses,
         }
+    }
+
+    pub fn provider_url(&self) -> &str {
+        &self.provider_url
     }
 
     pub fn provider(&self) -> Arc<Provider<Http>> {
@@ -75,6 +86,14 @@ impl ProviderManager {
 
     pub fn has_provider(&self) -> bool {
         !self.provider.is_empty()
+    }
+
+    pub fn has_main(&self) -> bool {
+        self.provider.iter().find(|i| i.is_main).is_some()
+    }
+
+    pub fn provider_iter(&self) -> Iter<'_, ProviderEntry> {
+        self.provider.iter()
     }
 
     pub fn get_main(&self) -> &ProviderEntry {

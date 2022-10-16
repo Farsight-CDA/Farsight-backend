@@ -1,9 +1,17 @@
 use crate::{
-    get_config,
-    types::api::{error, img_gen},
+    get_config, get_provider_manager,
+    types::{
+        api::{error, img_gen},
+        contract::ContractType,
+    },
+    IMainRegistrar,
 };
+use crate::{DEFAULT_CACHE_SIZE, DEFAULT_CACHE_TIMEOUT};
 use actix_files::NamedFile;
 use actix_web::{web::Json, Responder};
+use cached::proc_macro::cached;
+use cached::TimedSizedCache;
+use ethers::types::U256;
 use log::debug;
 use std::{
     path::{Path, PathBuf},
@@ -11,8 +19,8 @@ use std::{
 };
 
 pub async fn handle(req: Json<img_gen::Request>) -> Result<impl Responder, error::Error> {
-    // return error on invalid char a-Z0-9
-    let name = request_hash(&req.hash).await?;
+    // TODO: return error on invalid char a-Z0-9
+    let name = request_hash(req.hash).await?;
     if name.is_empty() {
         return Err(error::Error::Internal);
     }
@@ -27,9 +35,27 @@ pub async fn handle(req: Json<img_gen::Request>) -> Result<impl Responder, error
     Ok(NamedFile::open(img_fpath(&local_filename))?)
 }
 
-async fn request_hash(inp: &str) -> Result<String, error::Error> {
-    // if resp empty: -> name does not exists -> 404 returnen
-    Ok(String::from("testfilehashlolmock"))
+#[cached(
+    type = "TimedSizedCache<U256, Result<String, error::Error>>",
+    create = "{ TimedSizedCache::with_size_and_lifespan(DEFAULT_CACHE_SIZE,DEFAULT_CACHE_TIMEOUT) }"
+)]
+async fn request_hash(inp: U256) -> Result<String, error::Error> {
+    let main_provider = get_provider_manager().get_main();
+
+    let reg_address = main_provider
+        .contract_address(ContractType::Registrar)
+        .unwrap()
+        .address()
+        .clone();
+
+    let main_registrar = IMainRegistrar::new(reg_address, main_provider.provider());
+    let plain_name = main_registrar.lookup_plain_name(inp).call().await?;
+
+    if plain_name.trim().is_empty() {
+        return Err(error::Error::NotFound);
+    }
+
+    Ok(plain_name)
 }
 
 fn img_path() -> PathBuf {

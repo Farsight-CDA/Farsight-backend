@@ -15,6 +15,7 @@ use ethers::{
 use log::{debug, error};
 use once_cell::sync::OnceCell;
 use provider_manager::{ProviderAddress, ProviderEntry, ProviderManager};
+use types::contract::ContractType;
 
 include!("../types_output/abi_types.rs");
 
@@ -23,6 +24,9 @@ pub const CONFIG_FILE: &str = "config.toml";
 
 pub static CONFIG: OnceCell<Config> = OnceCell::new();
 pub static PROVIDER: OnceCell<ProviderManager> = OnceCell::new();
+
+pub const DEFAULT_CACHE_TIMEOUT: u64 = 3 * 60;
+pub const DEFAULT_CACHE_SIZE: usize = 1000;
 
 pub fn get_config() -> &'static Config {
     CONFIG.get().unwrap()
@@ -44,8 +48,8 @@ pub async fn main() -> std::io::Result<()> {
     let config = Config::load(CONFIG_PATH, CONFIG_FILE).expect("Failed to load config");
 
     let manager = load_provider_manager(&config);
-    if !manager.has_provider() {
-        error!("No provider definied");
+    if let Err(err) = check_provider_manager(&manager) {
+        error!("Provider config invalid: {err}");
         std::process::exit(1);
     }
     PROVIDER.set(manager).ok().unwrap();
@@ -67,10 +71,53 @@ fn load_provider_manager(config: &Config) -> ProviderManager {
                 ProviderAddress::new(add, pa.c_type)
             })
             .collect::<Vec<_>>();
+
         let provider = Provider::<Http>::try_from(&p.url).expect("Invalid provider url");
+
         debug!("Loading {} with {} addresse(s)", p.url, addresses.len());
-        manager.add_provider(ProviderEntry::new(provider, p.is_main, addresses));
+
+        manager.add_provider(ProviderEntry::new(
+            provider,
+            p.url.clone(),
+            p.is_main,
+            addresses,
+        ));
     }
 
     manager
 }
+
+fn check_provider_manager(pm: &ProviderManager) -> Result<(), String> {
+    if !pm.has_provider() {
+        return Err(String::from("No provider defined"));
+    }
+
+    if !pm.has_main() {
+        return Err(String::from("No main provider defined"));
+    }
+
+    // Assert main provider having all contract types setup correctly
+    let main = pm.get_main();
+    for ctype in ContractType::iter() {
+        if main.contract_address(ctype).is_none() {
+            return Err(format!(
+                "Main provider doesn't have Contract type: {ctype:?}"
+            ));
+        }
+    }
+
+    // Assert all providers having `Registrar` as `ContractType`
+    for pv in pm.provider_iter() {
+        if pv.contract_address(ContractType::Registrar).is_none() {
+            return Err(format!(
+                "Provider {} doesn't have a registrar setup",
+                pv.provider_url()
+            ));
+        }
+    }
+
+    Ok(())
+}
+
+// the other new api call:
+// main registrar lookup plain name

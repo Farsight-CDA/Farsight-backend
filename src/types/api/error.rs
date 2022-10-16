@@ -2,9 +2,10 @@ use actix_web::{error::BlockingError, http::StatusCode, HttpResponse, ResponseEr
 use ethers::{prelude::ContractError, providers::Middleware};
 use log::debug;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum Error {
     Internal,
+    NotFound,
 }
 
 impl std::fmt::Display for Error {
@@ -17,6 +18,7 @@ impl ResponseError for Error {
     fn status_code(&self) -> StatusCode {
         match self {
             Error::Internal => StatusCode::INTERNAL_SERVER_ERROR,
+            Error::NotFound => StatusCode::NOT_FOUND,
         }
     }
 

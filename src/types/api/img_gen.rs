@@ -1,6 +1,7 @@
+use ethers::types::U256;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct Request {
-    pub hash: String,
+    pub hash: U256,
 }
