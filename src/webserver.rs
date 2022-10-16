@@ -3,7 +3,7 @@ use actix_web::{get, web, App, HttpRequest, HttpServer, Responder};
 use crate::{
     get_config,
     handlers::{
-        estimate::{register_request, renew_request},
+        estimate::{expiration_info, name, register_request, renew_request},
         get_plain_name, get_price, get_registration, img_gen,
     },
 };
@@ -18,6 +18,11 @@ pub async fn run() -> std::io::Result<()> {
                 .route("getPrice", web::post().to(get_price::handle))
                 .route("getRegistration", web::post().to(get_registration::handle))
                 .route("getPlainName", web::post().to(get_plain_name::handle))
+                .route("estimateReceiveNameGuess", web::post().to(name::handle))
+                .route(
+                    "estimateExpirationInfoGuess",
+                    web::post().to(expiration_info::handle),
+                )
                 .route("estimateRenewGuess", web::post().to(renew_request::handle))
                 .route(
                     "estimateRegisterGuess",
