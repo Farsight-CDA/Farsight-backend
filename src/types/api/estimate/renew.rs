@@ -6,5 +6,4 @@ pub struct RenewRequestParam {
     pub name: U256,
     pub reg_version: u64,
     pub duration: U256,
-    pub expiration: U256,
 }

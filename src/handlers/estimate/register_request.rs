@@ -42,7 +42,6 @@ async fn estimate(req: &Request<RegisterRequestParam>) -> Result<U256, error::Er
             req.parameter.name,
             req.parameter.owner.clone(),
             req.parameter.duration,
-            req.parameter.expiration,
         )
         .estimate_gas()
         .await?;

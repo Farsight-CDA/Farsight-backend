@@ -41,7 +41,6 @@ async fn estimate(req: &Request<RenewRequestParam>) -> Result<U256, error::Error
             req.parameter.name,
             req.parameter.reg_version,
             req.parameter.duration,
-            req.parameter.expiration,
         )
         .estimate_gas()
         .await?;

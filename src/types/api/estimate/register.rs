@@ -7,5 +7,4 @@ pub struct RegisterRequestParam {
     pub name: U256,
     pub owner: String,
     pub duration: U256,
-    pub expiration: U256,
 }

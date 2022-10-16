@@ -18,14 +18,14 @@ pub async fn run() -> std::io::Result<()> {
                 .route("getPrice", web::post().to(get_price::handle))
                 .route("getRegistration", web::post().to(get_registration::handle))
                 .route("getPlainName", web::post().to(get_plain_name::handle))
-                .route("estimateReceiveNameGuess", web::post().to(name::handle))
+                .route("estimateReceiveNameGas", web::post().to(name::handle))
                 .route(
-                    "estimateExpirationInfoGuess",
+                    "estimateExpirationInfoGas",
                     web::post().to(expiration_info::handle),
                 )
-                .route("estimateRenewGuess", web::post().to(renew_request::handle))
+                .route("estimateRenewGas", web::post().to(renew_request::handle))
                 .route(
-                    "estimateRegisterGuess",
+                    "estimateRegisterGas",
                     web::post().to(register_request::handle),
                 )
                 .route("genImg", web::post().to(img_gen::handle)),
