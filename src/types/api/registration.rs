@@ -20,4 +20,6 @@ pub struct ChainState {
     pub expiration: U256,
     #[serde(rename = "isKeeper")]
     pub is_keeper: bool,
+    pub owner_change_version: u64,
+    pub registration_version: u64,
 }

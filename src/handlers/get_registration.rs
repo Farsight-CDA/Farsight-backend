@@ -64,15 +64,24 @@ async fn chain_data(name: U256) -> Result<Vec<ChainState>, error::Error> {
         let owner = registrar.get_local_owner_of(name);
         let expires = registrar.get_name_expiration(name);
         let is_keeper = registrar.is_keeper(name);
+        let owner_change_version = registrar.get_owner_change_version(name);
+        let registration_version = registrar.get_registration_version(name);
 
-        let (owner, expiration, is_keeper) =
-            try_join!(owner.call(), expires.call(), is_keeper.call())?;
+        let (owner, expiration, is_keeper, ocv, rv) = try_join!(
+            owner.call(),
+            expires.call(),
+            is_keeper.call(),
+            owner_change_version.call(),
+            registration_version.call()
+        )?;
 
         let state = ChainState {
             chain_id: U256::from(provider.id()),
             owner,
             expiration,
             is_keeper,
+            owner_change_version: ocv,
+            registration_version: rv,
         };
         chain_states.push(state);
     }
