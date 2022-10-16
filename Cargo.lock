@@ -1216,6 +1216,7 @@ dependencies = [
  "base64 0.13.0",
  "cached",
  "ethers",
+ "futures",
  "log",
  "once_cell",
  "pretty_env_logger",

@@ -25,8 +25,8 @@ pub const CONFIG_FILE: &str = "config.toml";
 pub static CONFIG: OnceCell<Config> = OnceCell::new();
 pub static PROVIDER: OnceCell<ProviderManager> = OnceCell::new();
 
-pub const DEFAULT_CACHE_TIMEOUT: u64 = 3 * 60;
-pub const DEFAULT_CACHE_SIZE: usize = 1000;
+pub const DEFAULT_CACHE_TIMEOUT: u64 = 3 * 60; // 3 Min timeout
+pub const DEFAULT_CACHE_SIZE: usize = 1_000; // Each cached function has a limit of 1000
 
 pub fn get_config() -> &'static Config {
     CONFIG.get().unwrap()
@@ -79,6 +79,7 @@ fn load_provider_manager(config: &Config) -> ProviderManager {
         manager.add_provider(ProviderEntry::new(
             provider,
             p.url.clone(),
+            p.id,
             p.is_main,
             addresses,
         ));

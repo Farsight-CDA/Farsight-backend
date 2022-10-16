@@ -2,7 +2,7 @@ use actix_web::{get, web, App, HttpRequest, HttpServer, Responder};
 
 use crate::{
     get_config,
-    handlers::{get_price, get_registration, img_gen},
+    handlers::{get_plain_name, get_price, get_registration, img_gen},
 };
 
 pub async fn run() -> std::io::Result<()> {
@@ -14,6 +14,7 @@ pub async fn run() -> std::io::Result<()> {
             web::scope("/api")
                 .route("getPrice", web::post().to(get_price::handle))
                 .route("getRegistration", web::post().to(get_registration::handle))
+                .route("getPlainName", web::post().to(get_plain_name::handle))
                 .route("genImg", web::post().to(img_gen::handle)),
         )
     })

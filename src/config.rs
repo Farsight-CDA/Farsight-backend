@@ -20,6 +20,7 @@ pub struct Config {
 pub struct Provider {
     pub url: String,
     pub is_main: bool,
+    pub id: u64,
     pub addresses: Vec<ProviderAddress>,
 }
 
@@ -69,6 +70,7 @@ impl Default for Config {
             webserver: Default::default(),
             image: Image::default(),
             provider: vec![Provider {
+                id: 0,
                 url: "http://url".to_string(),
                 addresses: vec![ProviderAddress {
                     address: "1234".to_string(),

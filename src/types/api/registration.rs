@@ -1,4 +1,4 @@
-use ethers::types::U256;
+use ethers::{abi::Address, types::U256};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
@@ -12,11 +12,11 @@ pub struct Response {
     pub chain_states: Vec<ChainState>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct ChainState {
     #[serde(rename = "chainId")]
     pub chain_id: U256,
-    pub owner: String,
+    pub owner: Address,
     pub expiration: U256,
     #[serde(rename = "isKeeper")]
     pub is_keeper: bool,

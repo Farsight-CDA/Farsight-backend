@@ -12,6 +12,7 @@ pub struct ProviderManager {
 pub struct ProviderEntry {
     provider: Arc<Provider<Http>>,
     provider_url: String,
+    id: u64,
     addresses: Vec<ProviderAddress>,
     is_main: bool,
 }
@@ -43,12 +44,14 @@ impl ProviderEntry {
     pub fn new(
         provider: Provider<Http>,
         url: String,
+        id: u64,
         is_main: bool,
         addresses: Vec<ProviderAddress>,
     ) -> Self {
         Self {
             provider: Arc::new(provider),
             provider_url: url,
+            id,
             is_main,
             addresses,
         }
@@ -68,6 +71,10 @@ impl ProviderEntry {
 
     pub fn addresses(&self) -> &[ProviderAddress] {
         self.addresses.as_ref()
+    }
+
+    pub fn id(&self) -> u64 {
+        self.id
     }
 
     pub fn contract_address(&self, ct: ContractType) -> Option<&ProviderAddress> {
