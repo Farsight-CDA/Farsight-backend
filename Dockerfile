@@ -6,13 +6,15 @@ COPY ./src ./src
 COPY ./.git ./.git
 COPY ./Cargo.lock ./
 COPY ./Cargo.toml ./
-COPY ./types_output ./types_output
+COPY ./contracts ./contracts
 
 RUN apt clean
 RUN apt-get update --allow-releaseinfo-change -y
 RUN apt upgrade -y
 
 # Build your program for release
+RUN cargo run --bin gen_types
+
 RUN cargo build --release
 
 RUN mv target/release/farsight-backend .
@@ -34,4 +36,3 @@ COPY --from=build /app/farsight-backend .
 
 # Run the binary
 CMD ["./farsight-backend"]
-
