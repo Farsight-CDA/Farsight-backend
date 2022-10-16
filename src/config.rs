@@ -43,6 +43,7 @@ pub struct Image {
     pub image_cache: String,
     pub bg_image: String,
     pub font: String,
+    pub img_gen_script: String,
 }
 
 impl Default for Webserver {
@@ -61,6 +62,7 @@ impl Default for Image {
             image_cache: "./img_cache".to_string(),
             bg_image: "./background.png".to_string(),
             font: "./SourceCodePro-Bold.ttf".to_string(),
+            img_gen_script: "./python/main.py".to_string(),
         }
     }
 }

@@ -20,9 +20,6 @@ use std::{
 
 pub async fn handle(req: Json<img_gen::Request>) -> Result<impl Responder, error::Error> {
     let name = request_hash(req.hash).await?;
-    if name.is_empty() {
-        return Err(error::Error::Internal);
-    }
 
     if !check_name(&name) {
         // Other errorcode?
@@ -88,7 +85,8 @@ fn gen_image(name: &str) -> Result<(), error::Error> {
     let bg_img = &crate::get_config().image.bg_image;
 
     // TODO: find a way to include this into the rust binary at ct
-    let py_path = abs_path("../../python/pic_mod/main.py")?;
+    //let py_path = abs_path("../../python/pic_mod/main.py")?;
+    let py_path = abs_path(&crate::get_config().image.img_gen_script)?;
     let py_path = py_path.as_str();
 
     let font_file = abs_path(&get_config().image.font)?;
