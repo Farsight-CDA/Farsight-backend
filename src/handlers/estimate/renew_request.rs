@@ -2,7 +2,7 @@ use actix_web::web::Json;
 use ethers::types::U256;
 
 use crate::{
-    get_provider_manager,
+    get_config, get_provider_manager,
     types::{
         api::{
             error,
@@ -45,5 +45,7 @@ async fn estimate(req: &Request<RenewRequestParam>) -> Result<U256, error::Error
         )
         .estimate_gas()
         .await?;
-    Ok(est)
+
+    let add = get_config().bridge_base_gas;
+    Ok(est + add)
 }

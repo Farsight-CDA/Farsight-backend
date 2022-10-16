@@ -12,6 +12,7 @@ use crate::types::contract::ContractType;
 // TODO: add constant: Bridge-base-gas: u64
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
+    pub bridge_base_gas: u64,
     pub provider: Vec<Provider>,
     pub webserver: Webserver,
     pub image: Image,
@@ -71,6 +72,7 @@ impl Default for Image {
 impl Default for Config {
     fn default() -> Self {
         Self {
+            bridge_base_gas: 10,
             webserver: Default::default(),
             image: Image::default(),
             provider: vec![Provider {
