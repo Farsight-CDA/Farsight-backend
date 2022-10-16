@@ -9,7 +9,6 @@ use serde::{Deserialize, Serialize};
 
 use crate::types::contract::ContractType;
 
-// TODO: add constant: Bridge-base-gas: u64
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
     pub bridge_base_gas: u64,
