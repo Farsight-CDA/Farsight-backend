@@ -12,7 +12,7 @@ pub struct Response {
     pub chain_states: Vec<ChainState>,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Default)]
 pub struct ChainState {
     #[serde(rename = "chainId")]
     pub chain_id: U256,

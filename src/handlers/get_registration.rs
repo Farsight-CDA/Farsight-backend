@@ -14,7 +14,7 @@ use actix_web::web::Json;
 use cached::proc_macro::cached;
 use cached::TimedSizedCache;
 use ethers::types::U256;
-use futures::try_join;
+use futures::join;
 
 pub async fn handle(
     req: Json<registration::Request>,
@@ -67,13 +67,27 @@ async fn chain_data(name: U256) -> Result<Vec<ChainState>, error::Error> {
         let owner_change_version = registrar.get_owner_change_version(name);
         let registration_version = registrar.get_registration_version(name);
 
-        let (owner, expiration, is_keeper, ocv, rv) = try_join!(
+        let (owner, expiration, is_keeper, ocv, rv) = join!(
             owner.call(),
             expires.call(),
             is_keeper.call(),
             owner_change_version.call(),
             registration_version.call()
-        )?;
+        );
+
+        let expiration = expiration?;
+        let is_keeper = is_keeper?;
+        let ocv = ocv?;
+        let rv = rv?;
+
+        if owner.is_err() {
+            let mut state = ChainState::default();
+            state.chain_id = U256::from(provider.id());
+            chain_states.push(state);
+            continue;
+        }
+
+        let owner = owner.unwrap();
 
         let state = ChainState {
             chain_id: U256::from(provider.id()),
