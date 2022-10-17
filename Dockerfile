@@ -13,7 +13,7 @@ RUN apt-get update --allow-releaseinfo-change -y
 RUN apt upgrade -y
 
 # Build your program for release
-RUN cargo run --bin gen_types
+RUN cargo run --release --bin gen_types
 
 RUN cargo build --release
 

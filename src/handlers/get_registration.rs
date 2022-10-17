@@ -9,10 +9,7 @@ use crate::{
         contract::ContractType,
     },
 };
-use crate::{DEFAULT_CACHE_SIZE, DEFAULT_CACHE_TIMEOUT};
 use actix_web::web::Json;
-use cached::proc_macro::cached;
-use cached::TimedSizedCache;
 use ethers::types::U256;
 use futures::join;
 
