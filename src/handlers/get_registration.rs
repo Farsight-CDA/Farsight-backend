@@ -33,10 +33,10 @@ pub async fn handle(
     }));
 }
 
-#[cached(
-    type = "TimedSizedCache<U256, Result<bool, error::Error>>",
-    create = "{ TimedSizedCache::with_size_and_lifespan(DEFAULT_CACHE_SIZE,DEFAULT_CACHE_TIMEOUT) }"
-)]
+//#[cached(
+//    type = "TimedSizedCache<U256, Result<bool, error::Error>>",
+//    create = "{ TimedSizedCache::with_size_and_lifespan(DEFAULT_CACHE_SIZE,DEFAULT_CACHE_TIMEOUT) }"
+//)]
 async fn is_available(name: U256) -> Result<bool, error::Error> {
     let main_provider = get_provider_manager().main();
 
@@ -48,10 +48,10 @@ async fn is_available(name: U256) -> Result<bool, error::Error> {
     Ok(main_reg.available(name).call().await?)
 }
 
-#[cached(
-    type = "TimedSizedCache<U256, Result<Vec<ChainState>, error::Error>>",
-    create = "{ TimedSizedCache::with_size_and_lifespan(DEFAULT_CACHE_SIZE,DEFAULT_CACHE_TIMEOUT) }"
-)]
+//#[cached(
+//    type = "TimedSizedCache<U256, Result<Vec<ChainState>, error::Error>>",
+//    create = "{ TimedSizedCache::with_size_and_lifespan(DEFAULT_CACHE_SIZE,DEFAULT_CACHE_TIMEOUT) }"
+//)]
 async fn chain_data(name: U256) -> Result<Vec<ChainState>, error::Error> {
     let mut chain_states = vec![];
 
